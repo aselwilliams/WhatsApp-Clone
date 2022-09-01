@@ -1,3 +1,4 @@
+import { Chat } from '@mui/icons-material';
 import './App.css';
 import Sidebar from './Sidebar';
 
@@ -9,7 +10,7 @@ function App() {
 
     <div className='app__body'>
       <Sidebar />
-      {/* Chat */}
+      <Chat />
 
     </div>
     </div>
