@@ -1,15 +1,22 @@
-import { AttachFile, SearchOutlined } from '@mui/icons-material';
+import { AttachFile, InsertEmoticon, SearchOutlined} from '@mui/icons-material';
 import MoreVert from '@mui/icons-material/MoreVert';
+import MicIcon from '@mui/icons-material/Mic';
 import { Avatar,IconButton } from '@mui/material'
 import React, { useState, useEffect } from 'react'
 import './Chat.css'
 
 function Chat() {
     const [seed, setSeed] =useState('');
+    const [input, setInput] = useState('')
 
     useEffect(()=> {
         setSeed(Math.floor(Math.random * 5000))
     }, [])
+
+    const sendMessage=(e)=>{
+        e.preventDefault()
+        console.log('You typed a msg')
+    }
   return (
     <div className='chat'>
         <div className="chat__header">
@@ -42,7 +49,12 @@ function Chat() {
             </p>
         </div>
         <div className="chat__footer">
-
+            <InsertEmoticon />
+            <form>
+                <input type='text' placeholder='Send a message' onChange={(e)=>setInput(e.target.value)}/>
+                <button type='submit' onClick={sendMessage}>Send a message</button>
+            </form>
+            <MicIcon />
         </div>
     </div>
   )

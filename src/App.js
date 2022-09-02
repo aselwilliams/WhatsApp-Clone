@@ -6,7 +6,7 @@ function App() {
   return (
     //BEM naming convention
     <div className="app">
- <h1>Let's Build</h1>
+ <h1>Whats App</h1>
 
     <div className='app__body'>
       <Sidebar />
