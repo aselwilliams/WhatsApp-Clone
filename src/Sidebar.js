@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import './Sidebar.css'
 import { Avatar,IconButton } from '@mui/material';
 import DonutLargeIcon from '@mui/icons-material/DonutLarge';
@@ -8,6 +8,8 @@ import { SearchOutlined } from '@mui/icons-material';
 import SidebarChat from './SidebarChat';
 
 function Sidebar() {
+const [rooms, setRooms] = useState([]);
+
   return (
     <div className='sidebar'>
         <div className="sidebar__header">
