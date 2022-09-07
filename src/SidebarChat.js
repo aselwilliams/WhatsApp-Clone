@@ -1,7 +1,8 @@
 import db from './firebase';
 import { Avatar } from '@mui/material';
 import React,{useEffect, useState} from 'react';
-import './SidebarChat.css'
+import './SidebarChat.css';
+import {collection, addDoc} from 'firebase/firestore';
 
 function SidebarChat({ id, name, addNewChat}) {
     const [seed, setSeed] = useState('')
@@ -10,14 +11,15 @@ function SidebarChat({ id, name, addNewChat}) {
         setSeed(Math.floor(Math.random()*5000))
     }, [])
 
-    const createChat = ()=> {
+    const createChat = async ()=> {
         const roomName= prompt('Please enter name for chat');
 
         if(roomName) {
             //do some DB stuff
-            db.collection('Rooms').add({
+            const docRef = await addDoc(collection(db, "Rooms"), {
                 name: roomName,
-            })
+              });
+              console.log(docRef.id)
         }
     }
 

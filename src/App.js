@@ -11,12 +11,10 @@ function App() {
 
     <div className='app__body'>
       <Router>
-      <Routes>
-        <Route path='/app'>
       <Sidebar />
-      <Chat />
-      </Route>
-      <Route path='/'><h1>Home Screen</h1></Route>
+      <Routes>
+        <Route path='/app' element={<Chat />} />
+        <Route path='/' element={<Chat />} />
       </Routes>
       </Router>
     </div>

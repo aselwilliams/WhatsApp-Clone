@@ -7,20 +7,29 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { SearchOutlined } from '@mui/icons-material';
 import SidebarChat from './SidebarChat';
 import db from './firebase';
+import { collection, onSnapshot } from "firebase/firestore";
 
 function Sidebar() {
 const [rooms, setRooms] = useState([]);
 
 useEffect(() => {
-const unsubscribe = db.collection('Rooms').onSnapSHot(snapshot => 
-    setRooms(snapshot.docs.map(doc =>({
-        id: doc.id,
-        data: doc.data()
-    })))
-)
-return () => {
-    unsubscribe();
-}
+    const colRef = collection(db, "Rooms");
+    const unsubscribe = onSnapshot(
+        collection(db, "Rooms"), 
+        (snapshot) => {
+            setRooms(snapshot.docs.map(doc=>({
+                id: doc.id,
+                data: doc.data()
+            })
+            ))
+        },
+        (error) => {
+          console.log(error)
+        });
+      
+     return ()=>{
+         unsubscribe()
+     }
 }, []);
 
   return (
