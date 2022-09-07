@@ -2,12 +2,14 @@ import { AttachFile, InsertEmoticon, SearchOutlined} from '@mui/icons-material';
 import MoreVert from '@mui/icons-material/MoreVert';
 import MicIcon from '@mui/icons-material/Mic';
 import { Avatar,IconButton } from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import {useParams} from 'react-router-dom';
 import './Chat.css'
 
 function Chat() {
     const [seed, setSeed] =useState('');
-    const [input, setInput] = useState('')
+    const [input, setInput] = useState('');
+    const {roomId} = useParams();
 
     useEffect(()=> {
         setSeed(Math.floor(Math.random * 5000))

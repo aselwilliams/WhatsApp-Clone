@@ -13,7 +13,7 @@ function App() {
       <Router>
       <Sidebar />
       <Routes>
-        <Route path='/app' element={<Chat />} />
+        <Route path='/rooms/:roomId' element={<Chat />} />
         <Route path='/' element={<Chat />} />
       </Routes>
       </Router>
