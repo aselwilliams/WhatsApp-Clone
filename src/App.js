@@ -1,6 +1,7 @@
 import './App.css';
 import Sidebar from './Sidebar';
-import Chat from './Chat'
+import Chat from './Chat';
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 
 function App() {
   return (
@@ -9,8 +10,15 @@ function App() {
  <h1>Whats App</h1>
 
     <div className='app__body'>
+      <Router>
+      <Routes>
+        <Route path='/app'>
       <Sidebar />
       <Chat />
+      </Route>
+      <Route path='/'><h1>Home Screen</h1></Route>
+      </Routes>
+      </Router>
     </div>
     </div>
   );
