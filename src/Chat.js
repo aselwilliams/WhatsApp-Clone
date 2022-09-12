@@ -6,39 +6,67 @@ import React, { useState, useEffect } from 'react';
 import {useParams} from 'react-router-dom';
 import './Chat.css';
 import db from './firebase';
-import {collection, doc, onSnapshot} from 'firebase/firestore';
+import firebase from "firebase";
+import { useStateValue } from './StateProvider';
+
+// import {collection, doc, onSnapshot, orderBy, query} from 'firebase/firestore';
 
 function Chat() {
     const [seed, setSeed] =useState('');
     const [input, setInput] = useState('');
     const {roomId} = useParams();
     const [roomName, setRoomName] = useState('');
+    const [messages, setMessages] = useState([]);
+    // const displayName = localStorage.getItem("displayName");
+    const [{user}, dispatch] = useStateValue();
 
     useEffect(()=> {
         if(roomId) {
-            onSnapshot(doc(db, 'Rooms', roomId), (doc)=> (
-                setRoomName(doc.data().name)
-            ))
-        }
+            db.collection("Rooms")
+            .doc(roomId)
+            .onSnapshot((snapshot) => {
+              setRoomName(snapshot.data().name);
+            });
+    
+          db.collection("Rooms")
+            .doc(roomId)
+            .collection("messages")
+            .orderBy("timestamp", "asc")
+            .onSnapshot((snapshot) => 
+              setMessages(snapshot.docs.map((doc) => doc.data()))
+            );
+  
+        } 
     }, [roomId])
 
     useEffect(()=> {
-        setSeed(Math.floor(Math.random * 5000))
+        setSeed(Math.floor(Math.random() * 5000))
     }, [roomId])
 
     const sendMessage=(e)=>{
         e.preventDefault()
         console.log('You typed >>', input)
-
-        setInput('')
+        console.log(messages)
+            db.collection("Rooms")
+              .doc(roomId)
+              .collection("messages")
+              .add({
+                message: input,
+                name: user.displayName,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                photoURL:user.photoURL
+              });
+            setInput('');
     }
+
+
   return (
     <div className='chat'>
         <div className="chat__header">
             <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`}/>
             <div className="chat__headerInfo">
                 <h3>{roomName}</h3>
-                <p>Last seen at ...</p>
+                <p>Last seen {new Date(messages[messages.length-1]?.timestamp?.toDate()).toUTCString()}</p>
             </div>
             <div className="chat__headerRight">
                 <IconButton>
@@ -53,15 +81,19 @@ function Chat() {
             </div>
         </div>
         <div className="chat__body">
-            <p className={`chat__message ${true && 'chat__receiver'}`}>
-            <span className='chat__name'>
-                Asel Williams
-            </span>
-            Hey Guys
-            <span className="chat__timestamp">
-                12:57am
-            </span>
-            </p>
+            {messages?.map((msg)=>(
+
+                <p className={`chat__message ${msg.name===user.displayName && 'chat__receiver'}`}>
+                <span className='chat__name'>
+                   {msg.name}
+                </span>
+                {msg.message}
+                <span className="chat__timestamp">
+                    {new Date(msg.timestamp?.toDate()).toUTCString()}
+                </span>
+                </p>
+            ))}
+            
         </div>
         <div className="chat__footer">
             <InsertEmoticon />

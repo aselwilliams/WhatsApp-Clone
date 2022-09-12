@@ -2,11 +2,22 @@ import db from './firebase';
 import { Avatar } from '@mui/material';
 import React,{useEffect, useState} from 'react';
 import './SidebarChat.css';
-import {collection, addDoc} from 'firebase/firestore';
-import {Link} from 'react-router-dom'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { password } from "./constants";
+import {Link} from 'react-router-dom';
+import firebase from "firebase";
 
 function SidebarChat({ id, name, addNewChat}) {
     const [seed, setSeed] = useState('')
+    const [messages, setMessages] = useState("")
+
+    useEffect(()=>{
+        if(id) {
+            db.collection('Rooms').doc(id).collection('messages').orderBy('timestamp', 'desc').onSnapshot((snapshot)=>
+                setMessages(snapshot.docs.map((doc)=>doc.data()))
+            )
+        }
+    }, [id])
 
     useEffect(()=> {
         setSeed(Math.floor(Math.random()*5000))
@@ -16,13 +27,33 @@ function SidebarChat({ id, name, addNewChat}) {
         const roomName= prompt('Please enter name for chat');
 
         if(roomName) {
-            //do some DB stuff
-            const docRef = await addDoc(collection(db, "Rooms"), {
+            db.collection("Rooms").add({
                 name: roomName,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
               });
-              console.log(docRef.id)
+            // const docRef = await addDoc(collection(db, "Rooms"), {
+            //     name: roomName,
+            //   });
+            //   console.log(docRef.id)
         }
     }
+
+    const deleteRoom = () => {
+        const passwordVerify = prompt("Enter Admin Password to delete Room");
+        if (passwordVerify == password) {
+          db.collection("Rooms")
+            .doc(id)
+            .delete()
+            .then(function () {
+              window.location = "/";
+            })
+            .catch(function (error) {
+              console.error("Error removing document: ", error);
+            });
+        } else {
+          alert("You are not authorised to delete rooms");
+        }
+      };
 
   return !addNewChat ? (
       <Link to={`/rooms/${id}`}>
@@ -30,8 +61,12 @@ function SidebarChat({ id, name, addNewChat}) {
        <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`}/>
        <div className="sidebarChat__info">
            <h2>{name}</h2>
-           <p>Last message...</p>
+           <p>{messages[0]?.message || 'Last message...'}</p>
        </div>
+
+       <div className="sidebarChat__delete" onClick={deleteRoom}>
+        <DeleteOutlineIcon />
+      </div>
     </div>
     </Link>
   ) : (

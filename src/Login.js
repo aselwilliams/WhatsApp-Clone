@@ -1,8 +1,8 @@
 import React from 'react';
 import './Login.css';
 import Button from '@mui/material/Button';
-import {provider} from './firebase';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {auth, provider} from './firebase';
+// import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { actionTypes } from './reducer';
 import { useStateValue } from './StateProvider';
 
@@ -11,12 +11,27 @@ function Login() {
 const [{}, dispatch] = useStateValue();
 
     const signIn = () => {
-        const auth = getAuth();
-        signInWithPopup(auth, provider)
-        .then(res=>{dispatch({
+        auth
+        .signInWithPopup(provider)
+        .then((result) => {
+          console.log(result.user);
+          dispatch({
             type: actionTypes.SET_USER,
-            user:res.user,
-        })})
+            user: result.user,
+          });
+          dispatch({
+            type: actionTypes.SET_SESSION,
+            uid: result.user.uid,
+            displayName: result.user.displayName,
+            photoURL: result.user.photoURL,
+          });
+        })
+        // const auth = getAuth();
+        // signInWithPopup(auth, provider)
+        // .then(res=>{dispatch({
+        //     type: actionTypes.SET_USER,
+        //     user:res.user,
+        // })})
         .catch(error=>alert(error.message))
     }
   return (

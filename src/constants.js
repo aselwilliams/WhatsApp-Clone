@@ -1,0 +1,1 @@
+export const password = "your_password_to_delete_room"; //Enter your password to delete the room
