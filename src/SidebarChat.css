@@ -3,7 +3,13 @@
     padding: 20px;
     cursor:pointer;
     border-bottom: 1px solid #f6f6f6;
+}
+.flex{
+    flex-direction:row;
     justify-content: space-between;
+}
+.sidebarChat__section{
+    display:flex;
 }
 a{
     text-decoration: none !important;
