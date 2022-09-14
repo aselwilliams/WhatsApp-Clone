@@ -40,7 +40,7 @@ function SidebarChat({ id, name, addNewChat }) {
 
   const deleteRoom = () => {
     const passwordVerify = prompt("Enter Admin Password to delete Room");
-    if (passwordVerify == password) {
+    if (passwordVerify === password) {
       db.collection("Rooms")
         .doc(id)
         .delete()
