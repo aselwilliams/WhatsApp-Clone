@@ -11,7 +11,7 @@ import { useStateValue } from "./StateProvider";
 
 function Sidebar() {
   const [rooms, setRooms] = useState([]);
-  const [{ user }] = useStateValue();
+  const [{user}, dispatch ] = useStateValue();
 
   useEffect(() => {
     const unsubscribe = db
@@ -50,7 +50,7 @@ function Sidebar() {
       <div className="sidebar__search">
         <div className="sidebar__searchContainer">
           <SearchOutlined />
-          <input placeholder="Search or start new chat" type="text" />
+          <input placeholder="Search" type="text" />
         </div>
       </div>
       <div className="sidebar__chats">
