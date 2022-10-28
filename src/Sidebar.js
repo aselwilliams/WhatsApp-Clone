@@ -12,6 +12,28 @@ import { useStateValue } from "./StateProvider";
 function Sidebar() {
   const [rooms, setRooms] = useState([]);
   const [{user}, dispatch ] = useStateValue();
+  const [flag, setFlag] = useState(true)
+  const [search, setSearch] = useState([])
+  const [input, setInput] = useState('')
+
+  const matcher = (searchVal, values) => {
+    const regex = RegExp(`.*${searchVal.toLowerCase().split("").join(".*")}.*`);
+    return values.filter((v) => v.data.name.toLowerCase().match(regex));
+  };
+  const handleChange = (e) => {
+    setFlag(false);
+    setInput(e.target.value);
+  };
+
+  useEffect(() => {
+    if (rooms.length > 0) {
+      setSearch(matcher(input, rooms));
+    }
+    if (input === "") {
+      setFlag(true);
+    }
+  }, [input]);
+
 
   useEffect(() => {
     const unsubscribe = db
@@ -50,15 +72,24 @@ function Sidebar() {
       <div className="sidebar__search">
         <div className="sidebar__searchContainer">
           <SearchOutlined />
-          <input placeholder="Search" type="text" />
+          <input placeholder="Search for chat room" type="text" onChange={handleChange} />
         </div>
       </div>
+      {flag ? (
       <div className="sidebar__chats">
         <SidebarChat addNewChat />
         {rooms.map((room) => (
           <SidebarChat key={room.id} id={room.id} name={room.data.name} />
         ))}
       </div>
+      ) : (
+        <div className="sidebar__chats">
+          <SidebarChat addNewChatVal='true'/>
+          {search.map((room)=> (
+            <SidebarChat key={room.id} id={room.id} name={room.data.name} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
