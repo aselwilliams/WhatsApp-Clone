@@ -11,6 +11,7 @@ import { useStateValue } from "./StateProvider";
 
 function Sidebar() {
   const [rooms, setRooms] = useState([]);
+  //eslint-disable-next-line
   const [{user}, dispatch ] = useStateValue();
   const [flag, setFlag] = useState(true)
   const [search, setSearch] = useState([])
@@ -32,6 +33,7 @@ function Sidebar() {
     if (input === "") {
       setFlag(true);
     }
+    //eslint-disable-next-line
   }, [input]);
 
 
